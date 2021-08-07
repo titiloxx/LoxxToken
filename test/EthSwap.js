@@ -10,8 +10,9 @@ contract('EthSwap', ([deployer, investor]) => {
   before(async ()=>{
     token = await Token.new();
     ethswap = await EthSwap.new(token.address);
+    const totalSupply=await token.totalSupply()
     //Transfer all tokens to ethswap
-    await token.transfer(ethswap.address,"2");
+    await token.transfer(ethswap.address,totalSupply.toString());
   })
 
   describe("buyToken()",()=>{
@@ -19,8 +20,11 @@ contract('EthSwap', ([deployer, investor]) => {
       await ethswap.buyToken(2)
       const balanceMain=await token.balanceOf(deployer)
       const balanceEthSwap=await token.balanceOf(ethswap.address)
+      const tokenLeft=await ethswap.tokensLeft()
       assert.equal(balanceMain.toString(),"2");
-      assert.equal(balanceEthSwap.toString(),"0");
+      assert.equal(balanceEthSwap.toString(),"8");
+      assert.equal(balanceEthSwap.toString(),tokenLeft.toString());
+
     })
   })
 
@@ -30,8 +34,10 @@ contract('EthSwap', ([deployer, investor]) => {
       await ethswap.sellToken(2)
       const balanceMain=await token.balanceOf(deployer)
       const balanceEthSwap=await token.balanceOf(ethswap.address)
+      const tokenLeft=await ethswap.tokensLeft()
       assert.equal(balanceMain.toString(),"0");
-      assert.equal(balanceEthSwap.toString(),"2");
+      assert.equal(balanceEthSwap.toString(),"10");
+      assert.equal(balanceEthSwap.toString(),tokenLeft.toString());
     })
   })
 })

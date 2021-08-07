@@ -3,7 +3,7 @@ pragma solidity = 0.8.6;
 contract Token {
     string  public name = "Titiloxx Token";
     string  public symbol = "LOXX";
-    uint256 public totalSupply = 2; // 1 million tokens
+    uint256 public totalSupply = 10; // 1 million tokens
     uint8   public decimals = 0;
 
     event Transfer(
@@ -19,6 +19,7 @@ contract Token {
     );
 
     mapping(address => uint256) public balanceOf;
+    uint256 public tokensLeft;
     mapping(address => mapping(address => uint256)) public allowance;
 
     constructor() public {
@@ -41,7 +42,7 @@ contract Token {
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
         require(_value <= balanceOf[_from]);
-        require(_value <= allowance[_from][msg.sender],"pis");
+        require(_value <= allowance[_from][msg.sender]);
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
         allowance[_from][msg.sender] -= _value;
